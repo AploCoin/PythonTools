@@ -17,9 +17,11 @@ class Packet:
         else:
             self.is_request = False
             self.unpacked_data = self.raw_data['Response']
-
         self.id = self.unpacked_data['id']
-        self.q = self.unpacked_data['q']
+        try:
+            self.q = self.unpacked_data['q']
+        except KeyError:
+            self.r = self.unpacked_data['r']
 
     # def __getattr__(self, attr: str):
     #     return self.unpacked_data[attr]
@@ -41,46 +43,44 @@ class Packet:
 
     def to_model(self):
         if self.raw_data.get('Request', None) is not None:
-            if self.q == "PingRequest":
+            if self.q == "Ping":
                 return PingRequest(self)
             elif self.q == "GetLastBlock":
-                return GetLastBlock(self)
-            elif self.q == "NewBlockRequest":
+                return GetLastBlockRequest(self)
+            elif self.q == "NewBlock":
                 return NewBlockRequest(self)
-            elif self.q == "GetNodesRequest":
+            elif self.q == "GetNodes":
                 return GetNodesRequest(self)
-            elif self.q == "AnnounceRequest":
+            elif self.q == "Announce":
                 return AnnounceRequest(self)
-            elif self.q == "GetAmountRequest":
+            elif self.q == "GetAmount":
                 return GetAmountRequest(self)
-            elif self.q == "GetTransactionRequest":
+            elif self.q == "GetTransaction":
                 return GetTransactionRequest(self)
-            elif self.q == "GetBlockByHashRequest":
+            elif self.q == "GetBlockByHash":
                 return GetBlockByHashRequest(self)
-            elif self.q == "GetBlocksByHeightsRequest":
+            elif self.q == "GetBlocksByHeights":
                 return GetBlocksByHeightsRequest(self)
-            elif self.q == "NewTransactionRequest":
+            elif self.q == "NewTransaction":
                 return NewTransactionRequest(self)
-            elif self.q == "GetBlockByHeightRequest":
+            elif self.q == "GetBlockByHeight":
                 return GetBlockByHeightRequest(self)
-            elif self.q == "GetBlocksByHeightsRequest":
-                return GetBlocksByHeightsRequest(self)
         elif self.raw_data.get('Response', None) is not None:
-            if self.q == "OkResponse":
+            if self.r == "Ok":
                 return OkResponse(self)
-            elif self.q == "PingResponse":
+            elif self.r == "Ping":
                 return PingResponse(self)
-            elif self.q == "GetNodesResponse":
+            elif self.r == "GetNodes":
                 return GetNodesResponse(self)
-            elif self.q == "GetBlockResponse":
+            elif self.r == "GetBlock":
                 return GetBlockResponse(self)
-            elif self.q == "GetAmountResponse":
+            elif self.r == "GetAmount":
                 return GetAmountResponse(self)
-            elif self.q == "SubmitPowResponse":
+            elif self.r == "SubmitPow":
                 return SubmitPowResponse(self)
-            elif self.q == "GetBlocksResponse":
+            elif self.r == "GetBlocks":
                 return GetBlocksResponse(self)
-            elif self.q == "GetTransactionResponse":
+            elif self.r == "GetTransaction":
                 return GetTransactionResponse(self)
 
 
@@ -120,7 +120,7 @@ class PingRequest(Packet):
         pass
 
 
-class GetLastBlock(Packet):
+class GetLastBlockRequest(Packet):
     def __init__(self, pack: Packet):
         super().__init__(pack.raw_data)
         pass
