@@ -155,7 +155,7 @@ class SocketHandler:
             bytes(self.__data_user["keys"]["maintenance"]["nonce-key"])
         )
 
-        sockert.send(len(message).to_bytes(4, byteorder='big'))
+        sockert.send(len(message).to_bytes(4, byteorder="big"))
         sockert.sendall(message)
         return id_req  # Return request ID so that we can use it to get the response
 
@@ -220,11 +220,11 @@ class Wallet:
         })
         data = self.sockert.Receive_Data(request_id)
         try:
-            return [wallet_addr.hex(), From_BigUint(data['Response']["amount"])]
+            return [wallet_addr.hex(), From_BigUint(data["Response"]["amount"])]
         except:
             pass
 
-if __name__ == '__main__': 
+if __name__ == "__main__": 
     handlers = SocketHandler()
     handlers.Connect_To_Nodes()
     handlers.Check_Ping()
